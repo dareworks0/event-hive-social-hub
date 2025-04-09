@@ -147,6 +147,13 @@ const CHAT_MESSAGES = [
   },
 ];
 
+// Label component for the booking dialog
+const Label = ({ htmlFor, children }: { htmlFor?: string, children: React.ReactNode }) => (
+  <label htmlFor={htmlFor} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+    {children}
+  </label>
+);
+
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -633,3 +640,4 @@ const EventDetailPage = () => {
 };
 
 export default EventDetailPage;
+
