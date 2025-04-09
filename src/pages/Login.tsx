@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import Layout from '@/components/layout/Layout';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Mail, Lock, Github, Facebook, Google } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Github, Facebook, Chrome } from 'lucide-react';
 
 const LoginPage = () => {
   const { toast } = useToast();
@@ -143,7 +143,7 @@ const LoginPage = () => {
 
               <div className="mt-6 grid grid-cols-3 gap-3">
                 <Button variant="outline" className="h-12">
-                  <Google className="h-5 w-5 mr-2" />
+                  <Chrome className="h-5 w-5 mr-2" />
                   <span className="sr-only md:not-sr-only md:text-sm">Google</span>
                 </Button>
                 <Button variant="outline" className="h-12">

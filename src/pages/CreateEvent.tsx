@@ -1,27 +1,31 @@
-
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import Layout from '@/components/layout/Layout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import Layout from '@/components/layout/Layout';
 import { 
-  Calendar as CalendarIcon, 
+  CalendarDays, 
   Clock, 
   MapPin, 
-  Image, 
-  Upload, 
   Plus, 
-  CalendarDays, 
-  DollarSign,
-  Users
+  X, 
+  Upload, 
+  CalendarIcon, 
+  ArrowRight, 
+  Info 
 } from 'lucide-react';
 
 // Event categories
@@ -57,6 +61,7 @@ const EVENT_TAGS = [
 
 const CreateEventPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
@@ -209,7 +214,7 @@ const CreateEventPage = () => {
 
     // In a real app, redirect to the event management page or event details page
     setTimeout(() => {
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     }, 2000);
   };
 
