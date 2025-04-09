@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -31,7 +30,7 @@ const EVENT_DATA = {
   id: '1',
   title: 'Tech Conference 2025',
   description: 'Join us for the biggest tech event of the year! This conference brings together industry leaders, innovators, and tech enthusiasts for two days of learning, networking, and inspiration. Explore the latest trends in AI, blockchain, cloud computing, and more through engaging talks, hands-on workshops, and interactive demos.',
-  longDescription: 'This year's conference theme is "Building the Future: Technology for Good" and will focus on how technology can address global challenges and create positive social impact. The conference features keynote speeches from renowned tech leaders, panel discussions on emerging technologies, hands-on workshops, networking opportunities, and a startup showcase where innovative companies will demonstrate their cutting-edge products and services. Whether you're a developer, entrepreneur, industry professional, or tech enthusiast, this conference offers valuable insights and connections for everyone in the tech ecosystem.',
+  longDescription: "This year's conference theme is \"Building the Future: Technology for Good\" and will focus on how technology can address global challenges and create positive social impact. The conference features keynote speeches from renowned tech leaders, panel discussions on emerging technologies, hands-on workshops, networking opportunities, and a startup showcase where innovative companies will demonstrate their cutting-edge products and services. Whether you're a developer, entrepreneur, industry professional, or tech enthusiast, this conference offers valuable insights and connections for everyone in the tech ecosystem.",
   date: 'May 15-16, 2025',
   time: '9:00 AM - 5:00 PM',
   location: 'Silicon Valley Convention Center',
@@ -640,4 +639,3 @@ const EventDetailPage = () => {
 };
 
 export default EventDetailPage;
-
