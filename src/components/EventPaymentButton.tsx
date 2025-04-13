@@ -9,16 +9,24 @@ import { useAuth } from '@/hooks/useAuth';
 
 interface EventPaymentButtonProps {
   eventId: string;
+  title?: string;
   price: number;
+  onClick?: () => void;
+  loading?: boolean;
 }
 
-const EventPaymentButton = ({ eventId, price }: EventPaymentButtonProps) => {
+const EventPaymentButton = ({ eventId, title, price, onClick, loading = false }: EventPaymentButtonProps) => {
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
   const handlePaymentClick = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+    
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -84,10 +92,10 @@ const EventPaymentButton = ({ eventId, price }: EventPaymentButtonProps) => {
       <Button
         className="w-full bg-eventhub-primary hover:bg-eventhub-secondary"
         onClick={handlePaymentClick}
-        disabled={isProcessing}
+        disabled={isProcessing || loading}
       >
         <CreditCard className="mr-2 h-4 w-4" />
-        {isProcessing ? 'Processing...' : price > 0 ? `Proceed to Payment ($${price})` : 'Register for Free'}
+        {isProcessing || loading ? 'Processing...' : price > 0 ? `Proceed to Payment ($${price})` : 'Register for Free'}
       </Button>
       
       <QRScanner

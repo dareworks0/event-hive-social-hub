@@ -23,7 +23,7 @@ const AuthCallback = () => {
         
         if (session) {
           // If role is specified in URL, add user role to database
-          if (role && (role === 'user' || role === 'organizer')) {
+          if (role && (role === 'user' || role === 'host_organizer')) {
             try {
               // Check if role already exists
               const { data: existingRole } = await supabase
@@ -33,10 +33,13 @@ const AuthCallback = () => {
                 .single();
               
               if (!existingRole) {
+                // Map 'organizer' role from URL to 'host_organizer' in the database
+                const dbRole = role === 'organizer' ? 'host_organizer' : role;
+                
                 // Add role if it doesn't exist
                 await supabase.from('user_roles').insert({
                   user_id: session.user.id,
-                  role: role
+                  role: dbRole
                 });
                 
                 toast({

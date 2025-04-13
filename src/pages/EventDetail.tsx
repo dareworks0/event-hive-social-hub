@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -138,7 +137,7 @@ const EventDetail = () => {
               </div>
               
               <div className="flex space-x-2 mt-4 md:mt-0">
-                <EventBookmarkButton id={event.id} />
+                <EventBookmarkButton eventId={event.id} />
                 <Button variant="outline" className="border-white text-white hover:bg-white/20" onClick={handleShare}>
                   <Share className="h-4 w-4 mr-2" />
                   Share
@@ -269,7 +268,7 @@ const EventDetail = () => {
                   </div>
                   
                   <EventPaymentButton
-                    id={event.id}
+                    eventId={event.id}
                     title={event.title}
                     price={event.price}
                     onClick={handleBookEvent}

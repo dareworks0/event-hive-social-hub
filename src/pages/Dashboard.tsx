@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,11 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EventCard } from '@/components/ui/event-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/layout/Layout';
-import { Calendar, Clock, MapPin, Users, Plus, Ticket, Calendar as CalendarIcon, MessageSquare, TrendingUp, BarChart3, DollarSign, LineChart, UserPlus, Clock3, Settings, Bell, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Plus, Ticket, Calendar as CalendarIcon, MessageSquare, TrendingUp, BarChart3, DollarSign, LineChart, UserPlus, Clock3, Settings, Bell, ChevronRight, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
-// Mock upcoming events
 const UPCOMING_EVENTS = [
   {
     id: '1',
@@ -34,7 +32,6 @@ const UPCOMING_EVENTS = [
   },
 ];
 
-// Mock past events
 const PAST_EVENTS = [
   {
     id: '7',
@@ -58,7 +55,6 @@ const PAST_EVENTS = [
   },
 ];
 
-// Mock recommended events
 const RECOMMENDED_EVENTS = [
   {
     id: '2',
@@ -82,7 +78,6 @@ const RECOMMENDED_EVENTS = [
   },
 ];
 
-// Upcoming activity data
 const UPCOMING_ACTIVITY = [
   {
     id: '1',
@@ -107,7 +102,6 @@ const UPCOMING_ACTIVITY = [
   },
 ];
 
-// Mock organizer events
 const ORGANIZER_EVENTS = [
   {
     id: 'org1',
@@ -168,11 +162,9 @@ const DashboardPage = () => {
   }, [user]);
   
   useEffect(() => {
-    // Update URL when tab changes
     setSearchParams(dashboardView === 'organizer' ? { tab: 'organizer' } : {});
   }, [dashboardView, setSearchParams]);
   
-  // Switch to organizer view if user role is organizer
   useEffect(() => {
     if (userRole === 'organizer' && dashboardView !== 'organizer') {
       setDashboardView('organizer');
@@ -195,7 +187,6 @@ const DashboardPage = () => {
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
-        {/* Dashboard Header */}
         <div className="bg-gradient-to-r from-eventhub-primary to-eventhub-secondary text-white py-12 px-4">
           <div className="container mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -208,7 +199,6 @@ const DashboardPage = () => {
                 </p>
               </div>
               
-              {/* View switcher */}
               {userRole === 'organizer' && (
                 <div className="mt-4 md:mt-0 bg-white/10 rounded-lg p-1">
                   <Button 
@@ -233,13 +223,10 @@ const DashboardPage = () => {
           </div>
         </div>
         
-        {/* User Dashboard Content */}
         {dashboardView === 'user' && (
           <div className="container mx-auto py-8 px-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Content - Events */}
               <div className="lg:col-span-2 space-y-8">
-                {/* Your Events Section */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">Your Events</h2>
@@ -316,7 +303,6 @@ const DashboardPage = () => {
                   </Tabs>
                 </div>
                 
-                {/* Recommended Events */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-xl font-semibold mb-6">Recommended For You</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -342,9 +328,7 @@ const DashboardPage = () => {
                 </div>
               </div>
               
-              {/* Sidebar */}
               <div className="space-y-8">
-                {/* User Stats */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-xl font-semibold mb-4">Your Stats</h2>
                   <div className="grid grid-cols-2 gap-4">
@@ -367,7 +351,6 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 
-                {/* Upcoming Activity */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-xl font-semibold mb-4">Upcoming Activity</h2>
                   <div className="space-y-4">
@@ -390,7 +373,6 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 
-                {/* Quick Actions */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
                   <div className="space-y-3">
@@ -413,10 +395,8 @@ const DashboardPage = () => {
           </div>
         )}
         
-        {/* Organizer Dashboard Content */}
         {dashboardView === 'organizer' && (
           <div className="container mx-auto py-8 px-4">
-            {/* Top Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card>
                 <CardHeader className="pb-2">
@@ -436,7 +416,7 @@ const DashboardPage = () => {
                       <span>2 Upcoming</span>
                     </div>
                     <div className="flex items-center text-gray-500">
-                      <CheckCircle2 className="h-4 w-4 mr-1" />
+                      <CheckCircle className="h-4 w-4 mr-1" />
                       <span>1 Completed</span>
                     </div>
                   </div>
@@ -519,7 +499,6 @@ const DashboardPage = () => {
               </Card>
             </div>
             
-            {/* Create Event Button */}
             <div className="flex justify-end mb-6">
               <Link to="/create">
                 <Button className="bg-eventhub-primary hover:bg-eventhub-secondary transition-colors">
@@ -529,7 +508,6 @@ const DashboardPage = () => {
               </Link>
             </div>
             
-            {/* Your Events */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
               <h2 className="text-xl font-semibold mb-6">Your Events</h2>
               
@@ -600,9 +578,7 @@ const DashboardPage = () => {
               </div>
             </div>
             
-            {/* Bottom Section: Recent Activity and Quick Links */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Recent Activity */}
               <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
                 <div className="space-y-4">
@@ -648,7 +624,6 @@ const DashboardPage = () => {
                 </div>
               </div>
               
-              {/* Quick Links */}
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-xl font-semibold mb-4">Organizer Tools</h2>
                 <div className="space-y-3">
