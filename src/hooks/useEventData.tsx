@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,7 +14,7 @@ export interface EventType {
   category: string;
   image_url: string;
   organizer_id: string;
-  organizer_name?: string;
+  organizer_name?: string; // Added optional organizer_name property
   price: number;
   created_at: string;
 }
