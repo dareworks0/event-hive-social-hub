@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -11,6 +11,7 @@ import { Slider } from '@/components/ui/slider';
 import Layout from '@/components/layout/Layout';
 import { ChevronLeft, ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 // City options for the dropdown
 const CITIES = [
@@ -40,6 +41,8 @@ const INTERESTS = [
 
 const RegisterPage = () => {
   const { toast } = useToast();
+  const { signUp, user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -55,6 +58,14 @@ const RegisterPage = () => {
     acceptTerms: false,
     newsletterOpt: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -144,22 +155,27 @@ const RegisterPage = () => {
     setStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Here you would typically submit the form data to your backend
-    console.log('Form submitted:', formData);
-
-    // Show success toast
-    toast({
-      title: "Registration Successful!",
-      description: "Welcome to EventHub! Redirecting to login...",
-    });
-
-    // In a real app, you'd redirect to the login page or dashboard after successful registration
-    setTimeout(() => {
-      window.location.href = '/login';
-    }, 2000);
+    if (isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      await signUp(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName
+      );
+      
+      // Registration success is handled by the toast in signUp
+      // The user will need to verify their email
+    } catch (error) {
+      console.error('Registration error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -458,8 +474,9 @@ const RegisterPage = () => {
                   <Button
                     type="submit"
                     className="bg-eventhub-primary hover:bg-eventhub-secondary w-full flex items-center justify-center"
+                    disabled={isSubmitting}
                   >
-                    Complete Registration
+                    {isSubmitting ? 'Registering...' : 'Complete Registration'}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 )}

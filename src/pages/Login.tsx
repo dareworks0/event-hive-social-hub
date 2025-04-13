@@ -1,52 +1,58 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Layout from '@/components/layout/Layout';
-import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const LoginPage = () => {
-  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { signIn, signInWithGoogle, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
-
-    // Here you would typically authenticate the user
-    // For demo purposes, we'll just show a toast and redirect
     
-    toast({
-      title: "Login Successful!",
-      description: "Welcome back to EventHub!",
-    });
-
-    // In a real app, you'd redirect to the dashboard after successful login
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 1500);
+    if (isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      await signIn(formData.email, formData.password);
+      // Redirect is handled by the auth state change in useEffect
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    toast({
-      title: "Google Sign In",
-      description: "Redirecting to Google authentication...",
-    });
-    
-    // Here you would implement Google Sign In
-    console.log("Google Sign In clicked");
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // Redirect is handled by the OAuth callback
+    } catch (error) {
+      console.error('Google sign in error:', error);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -117,8 +123,9 @@ const LoginPage = () => {
               <Button
                 type="submit"
                 className="w-full bg-eventhub-primary hover:bg-eventhub-secondary"
+                disabled={isSubmitting}
               >
-                Sign In
+                {isSubmitting ? 'Signing In...' : 'Sign In'}
               </Button>
             </form>
 
