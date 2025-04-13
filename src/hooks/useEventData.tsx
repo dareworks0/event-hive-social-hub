@@ -4,8 +4,6 @@ import { useToast } from '@/hooks/use-toast';
 import { EventType, EventQueryResult } from '@/types/event.types';
 import { fetchEventById } from '@/services/eventService';
 
-export { EventType };
-
 export const useEventData = (eventId: string): EventQueryResult => {
   const [event, setEvent] = useState<EventType | null>(null);
   const [loading, setLoading] = useState(true);
