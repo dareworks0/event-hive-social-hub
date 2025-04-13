@@ -14,7 +14,7 @@ export interface EventType {
   category: string;
   image_url: string;
   organizer_id: string;
-  organizer_name?: string; // Added optional organizer_name property
+  organizer_name?: string; // Existing optional property
   price: number;
   created_at: string;
 }
@@ -62,6 +62,12 @@ export const useEventData = (eventId: string) => {
           return;
         }
         
+        // Explicitly type the event data and include organizer_name
+        let processedEventData: EventType = {
+          ...eventData as EventType,
+          organizer_name: undefined // Initialize organizer_name
+        };
+        
         // Get organizer name if event found
         if (eventData.organizer_id) {
           const { data: organizerData, error: organizerError } = await supabase
@@ -71,11 +77,11 @@ export const useEventData = (eventId: string) => {
             .single();
           
           if (!organizerError && organizerData) {
-            eventData.organizer_name = `${organizerData.first_name} ${organizerData.last_name}`;
+            processedEventData.organizer_name = `${organizerData.first_name} ${organizerData.last_name}`;
           }
         }
         
-        setEvent(eventData as unknown as EventType);
+        setEvent(processedEventData);
       } catch (err: any) {
         console.error('Error fetching event:', err);
         setError(err.message || 'Failed to load event details');
