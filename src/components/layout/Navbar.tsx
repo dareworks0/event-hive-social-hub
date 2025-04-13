@@ -1,9 +1,8 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search, User, Bell } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,15 +29,6 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search events..."
-                className="pl-10 w-64 rounded-full bg-gray-50"
-              />
-            </div>
-
             <Link to="/explore" className="text-gray-600 hover:text-eventhub-primary transition-colors">
               Explore
             </Link>
@@ -48,11 +38,6 @@ const Navbar = () => {
 
             {/* Authentication Links */}
             <div className="flex items-center space-x-3">
-              <Link to="/notifications">
-                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-eventhub-primary">
-                  <Bell className="h-5 w-5" />
-                </Button>
-              </Link>
               <Link to="/login">
                 <Button variant="outline" className="border-eventhub-primary text-eventhub-primary hover:bg-eventhub-primary hover:text-white">
                   Sign In
@@ -77,24 +62,12 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 animate-fade-in">
-            <div className="relative my-3">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search events..."
-                className="pl-10 w-full rounded-full bg-gray-50"
-              />
-            </div>
-
             <div className="flex flex-col space-y-3 py-3">
               <Link to="/explore" className="text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                 Explore
               </Link>
               <Link to="/create" className="text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                 Create Event
-              </Link>
-              <Link to="/notifications" className="text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
-                Notifications
               </Link>
               <Link to="/login" className="flex items-center space-x-2 text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                 <User className="h-4 w-4" />

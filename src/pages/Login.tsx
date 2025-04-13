@@ -3,11 +3,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import Layout from '@/components/layout/Layout';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Mail, Lock, Github, Facebook, Chrome } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react';
 
 const LoginPage = () => {
   const { toast } = useToast();
@@ -15,16 +14,11 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    rememberMe: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleCheckboxChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, rememberMe: checked }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,6 +37,16 @@ const LoginPage = () => {
     setTimeout(() => {
       window.location.href = '/dashboard';
     }, 1500);
+  };
+
+  const handleGoogleSignIn = () => {
+    toast({
+      title: "Google Sign In",
+      description: "Redirecting to Google authentication...",
+    });
+    
+    // Here you would implement Google Sign In
+    console.log("Google Sign In clicked");
   };
 
   const togglePasswordVisibility = () => {
@@ -110,19 +114,6 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={formData.rememberMe}
-                    onCheckedChange={handleCheckboxChange}
-                  />
-                  <Label htmlFor="rememberMe" className="text-sm">
-                    Remember me
-                  </Label>
-                </div>
-              </div>
-
               <Button
                 type="submit"
                 className="w-full bg-eventhub-primary hover:bg-eventhub-secondary"
@@ -141,18 +132,14 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <Button variant="outline" className="h-12">
+              <div className="mt-6">
+                <Button 
+                  variant="outline" 
+                  className="w-full h-12"
+                  onClick={handleGoogleSignIn}
+                >
                   <Chrome className="h-5 w-5 mr-2" />
-                  <span className="sr-only md:not-sr-only md:text-sm">Google</span>
-                </Button>
-                <Button variant="outline" className="h-12">
-                  <Facebook className="h-5 w-5 mr-2" />
-                  <span className="sr-only md:not-sr-only md:text-sm">Facebook</span>
-                </Button>
-                <Button variant="outline" className="h-12">
-                  <Github className="h-5 w-5 mr-2" />
-                  <span className="sr-only md:not-sr-only md:text-sm">GitHub</span>
+                  <span>Sign in with Google</span>
                 </Button>
               </div>
             </div>
