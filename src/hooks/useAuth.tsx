@@ -3,13 +3,14 @@ import { createContext, useState, useContext, useEffect, ReactNode } from 'react
 import type { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { syncUserProfileWithAuth } from '@/services/profileService';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, role: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
   userRole: string | null;
@@ -27,14 +28,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
+      async (event, newSession) => {
+        console.log('Auth state changed:', event, newSession?.user?.id);
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
-        // If user is logged in, fetch their role
+        // If user is logged in, fetch their role and sync profile
         if (newSession?.user) {
-          setTimeout(() => {
+          setTimeout(async () => {
             fetchUserRole(newSession.user.id);
+            await syncUserProfileWithAuth(newSession.user);
           }, 0);
         } else {
           setUserRole(null);
@@ -43,12 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       
       if (currentSession?.user) {
         fetchUserRole(currentSession.user.id);
+        await syncUserProfileWithAuth(currentSession.user);
       }
       
       setLoading(false);
@@ -127,18 +131,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
+  const signUp = async (email: string, password: string, firstName: string, lastName: string, role: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({
+      const { error, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             first_name: firstName,
             last_name: lastName,
+            role: role, // Add role to user metadata
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?role=${role}`,
         },
       });
       
