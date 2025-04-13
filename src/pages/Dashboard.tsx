@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EventCard } from '@/components/ui/event-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/layout/Layout';
-import { Calendar, Clock, MapPin, Users, Plus, Ticket, Calendar as CalendarIcon, MessageSquare, TrendingUp, BarChart3, DollarSign, LineChart, UserPlus, Clock3, Settings, Bell, ChevronRight, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Plus, Ticket, Calendar as CalendarIcon, MessageSquare, TrendingUp, BarChart3, DollarSign, LineChart, UserPlus, Clock3, Settings, Bell, ChevronRight, CheckCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -416,7 +416,7 @@ const DashboardPage = () => {
                       <span>2 Upcoming</span>
                     </div>
                     <div className="flex items-center text-gray-500">
-                      <CheckCircle className="h-4 w-4 mr-1" />
+                      <CheckCircle2 className="h-4 w-4 mr-1" />
                       <span>1 Completed</span>
                     </div>
                   </div>
