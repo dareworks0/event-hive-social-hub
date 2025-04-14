@@ -12,6 +12,11 @@ import Layout from '@/components/layout/Layout';
 import { ChevronLeft, ChevronRight, ArrowRight, CheckCircle2, User, Building, UserPlus2, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot
+} from "@/components/ui/input-otp";
 
 // Interest categories
 const INTERESTS = [
@@ -27,7 +32,7 @@ const INTERESTS = [
 
 const RegisterPage = () => {
   const { toast } = useToast();
-  const { signUp, user } = useAuth();
+  const { signUp, user, verifyOtp } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const defaultRole = searchParams.get('role') || 'user';
@@ -47,6 +52,8 @@ const RegisterPage = () => {
     newsletterOpt: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOtpVerification, setShowOtpVerification] = useState(false);
+  const [otp, setOtp] = useState('');
 
   useEffect(() => {
     // If user is already logged in, redirect to dashboard
@@ -158,14 +165,103 @@ const RegisterPage = () => {
         activeTab // Pass the role
       );
       
+      setShowOtpVerification(true);
       // Registration success is handled by the toast in signUp
-      // The user will need to verify their email
+      // The user will need to verify their email with OTP
     } catch (error) {
       console.error('Registration error:', error);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6 || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      await verifyOtp(formData.email, otp);
+      // Redirect is handled by the auth state change in useEffect
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message || "Invalid verification code. Please try again.",
+        variant: "destructive",
+      });
+      console.error('OTP verification error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (showOtpVerification) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900">Verify Your Email</h2>
+                <p className="mt-2 text-gray-600">Enter the code sent to {formData.email}</p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex justify-center">
+                  <InputOTP 
+                    maxLength={6} 
+                    value={otp} 
+                    onChange={setOtp}
+                    containerClassName="gap-2"
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
+
+                <Button
+                  type="button"
+                  className="w-full bg-eventhub-primary hover:bg-eventhub-secondary"
+                  disabled={otp.length !== 6 || isSubmitting}
+                  onClick={handleVerifyOtp}
+                >
+                  {isSubmitting ? 'Verifying...' : 'Verify Code'}
+                </Button>
+
+                <div className="text-center text-sm">
+                  <p className="text-gray-600">
+                    Didn't receive a code?{' '}
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-eventhub-primary"
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                    >
+                      Resend
+                    </Button>
+                  </p>
+                </div>
+
+                <div className="mt-6 text-center text-sm">
+                  <p className="text-gray-600">
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-eventhub-primary hover:underline font-medium">
+                      Sign in
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

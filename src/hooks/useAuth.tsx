@@ -8,10 +8,11 @@ import { syncUserProfileWithAuth } from '@/services/profileService';
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ needsOtp: boolean } | void>;
   signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string, firstName: string, lastName: string, role: string) => Promise<void>;
   signOut: () => Promise<void>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
   loading: boolean;
   userRole: string | null;
 }
@@ -85,11 +86,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      // Step 1: Initiate sign-in process with OTP
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false, // Only existing users can sign in
+          data: {
+            password // We'll verify this in the edge function
+          }
+        }
+      });
       
       if (error) {
         toast({
-          title: "Error signing in",
+          title: "Error sending verification code",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+      
+      // If no error, OTP has been sent
+      return { needsOtp: true };
+      
+    } catch (error: any) {
+      console.error('Error signing in:', error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOtp = async (email: string, otp: string) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'email'
+      });
+      
+      if (error) {
+        toast({
+          title: "Error verifying code",
           description: error.message,
           variant: "destructive",
         });
@@ -100,8 +140,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
+      
     } catch (error: any) {
-      console.error('Error signing in:', error.message);
+      console.error('Error verifying OTP:', error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -198,7 +239,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signIn, 
       signInWithGoogle, 
       signUp, 
-      signOut, 
+      signOut,
+      verifyOtp,
       loading,
       userRole
     }}>

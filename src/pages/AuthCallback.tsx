@@ -79,7 +79,7 @@ const AuthCallback = () => {
       }
     };
     
-    if (hash || window.location.search.includes('code=')) {
+    if (hash || window.location.search.includes('code=') || window.location.search.includes('type=')) {
       handleAuth();
     }
   }, [navigate, role, toast]);
