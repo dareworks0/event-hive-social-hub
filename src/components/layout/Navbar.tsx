@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, User, LogOut, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -16,7 +16,8 @@ import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, signOut, userRole } = useAuth();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -32,6 +33,9 @@ const Navbar = () => {
     const email = user.email || '';
     return email.charAt(0).toUpperCase();
   };
+
+  const isOrganizer = userRole === 'host_organizer';
+  const dashboardLink = isOrganizer ? '/organizer/dashboard' : '/dashboard';
 
   return (
     <nav className="bg-white shadow-sm">
@@ -57,7 +61,7 @@ const Navbar = () => {
             <Link to="/news" className="text-gray-600 hover:text-eventhub-primary transition-colors">
               News
             </Link>
-            {user && (
+            {user && isOrganizer && (
               <Link to="/create" className="text-gray-600 hover:text-eventhub-primary transition-colors">
                 Create Event
               </Link>
@@ -77,10 +81,21 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel className="text-xs text-gray-500 font-normal">
+                      {isOrganizer ? 'Organizer Account' : 'User Account'}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="cursor-pointer w-full">Dashboard</Link>
+                      <Link to={dashboardLink} className="cursor-pointer w-full">Dashboard</Link>
                     </DropdownMenuItem>
+                    {isOrganizer && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/create" className="cursor-pointer w-full">
+                          <Plus className="mr-2 h-4 w-4" />
+                          <span>Create Event</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
@@ -122,7 +137,7 @@ const Navbar = () => {
               <Link to="/news" className="text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                 News
               </Link>
-              {user && (
+              {user && isOrganizer && (
                 <Link to="/create" className="text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                   Create Event
                 </Link>
@@ -130,7 +145,7 @@ const Navbar = () => {
               
               {user ? (
                 <>
-                  <Link to="/dashboard" className="flex items-center space-x-2 text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
+                  <Link to={dashboardLink} className="flex items-center space-x-2 text-gray-600 hover:text-eventhub-primary transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                     <User className="h-4 w-4" />
                     <span>Dashboard</span>
                   </Link>

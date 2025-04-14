@@ -9,13 +9,15 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import AttendeeDashboard from "./pages/AttendeeDashboard";
+import OrganizerDashboard from "./pages/OrganizerDashboard";
 import EventDetail from "./pages/EventDetail";
 import CreateEvent from "./pages/CreateEvent";
 import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import RoleRoute from "./components/auth/RoleRoute";
 import NewsPage from "./pages/NewsPage";
 
 const queryClient = new QueryClient();
@@ -33,18 +35,27 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             
-            {/* Protected Routes */}
+            {/* Protected Routes with Role-Based Access */}
             <Route path="/dashboard" element={
               <PrivateRoute>
-                <Dashboard />
+                <AttendeeDashboard />
               </PrivateRoute>
             } />
+            
+            <Route path="/organizer/dashboard" element={
+              <RoleRoute requiredRole="host_organizer">
+                <OrganizerDashboard />
+              </RoleRoute>
+            } />
+            
             <Route path="/event/:id" element={<EventDetail />} />
+            
             <Route path="/create" element={
-              <PrivateRoute>
+              <RoleRoute requiredRole="host_organizer">
                 <CreateEvent />
-              </PrivateRoute>
+              </RoleRoute>
             } />
+            
             <Route path="/category/:category" element={<CategoryPage />} />
             <Route path="/explore" element={<CategoryPage />} />
             <Route path="/news" element={<NewsPage />} />

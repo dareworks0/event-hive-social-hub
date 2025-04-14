@@ -52,9 +52,16 @@ const AuthCallback = () => {
             }
           }
           
+          // Get user role from database
+          const { data: userRoleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .single();
+            
           // Redirect to appropriate dashboard based on role
-          if (role === 'organizer') {
-            navigate('/dashboard?tab=organizer');
+          if (userRoleData && userRoleData.role === 'host_organizer') {
+            navigate('/organizer/dashboard');
           } else {
             navigate('/dashboard');
           }
