@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,6 @@ import {
   InputOTPSlot
 } from "@/components/ui/input-otp";
 
-// Interest categories
 const INTERESTS = [
   { id: 'music', label: 'Music' },
   { id: 'tech', label: 'Technology' },
@@ -56,7 +54,6 @@ const RegisterPage = () => {
   const [otp, setOtp] = useState('');
 
   useEffect(() => {
-    // If user is already logged in, redirect to dashboard
     if (user) {
       navigate('/dashboard');
     }
@@ -82,9 +79,7 @@ const RegisterPage = () => {
   };
 
   const nextStep = () => {
-    // Basic validation for each step
     if (step === 1) {
-      // Common validation for both roles
       if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword) {
         toast({
           title: "Missing Information",
@@ -112,7 +107,6 @@ const RegisterPage = () => {
         return;
       }
       
-      // Organizer-specific validation
       if (activeTab === 'organizer' && !formData.companyName) {
         toast({
           title: "Missing Information",
@@ -162,12 +156,10 @@ const RegisterPage = () => {
         formData.password,
         formData.firstName,
         formData.lastName,
-        activeTab // Pass the role
+        activeTab
       );
       
       setShowOtpVerification(true);
-      // Registration success is handled by the toast in signUp
-      // The user will need to verify their email with OTP
     } catch (error) {
       console.error('Registration error:', error);
     } finally {
@@ -181,7 +173,6 @@ const RegisterPage = () => {
     try {
       setIsSubmitting(true);
       await verifyOtp(formData.email, otp);
-      // Redirect is handled by the auth state change in useEffect
     } catch (error: any) {
       toast({
         title: "Verification Failed",
@@ -314,7 +305,6 @@ const RegisterPage = () => {
               </TabsContent>
             </Tabs>
 
-            {/* Step indicators */}
             <div className="flex justify-center mb-8">
               {[1, 2, 3].map((s) => (
                 <div key={s} className="flex items-center">
@@ -341,7 +331,6 @@ const RegisterPage = () => {
             </div>
 
             <form onSubmit={handleSubmit}>
-              {/* Step 1: Basic Information */}
               {step === 1 && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="grid grid-cols-2 gap-4">
@@ -430,7 +419,6 @@ const RegisterPage = () => {
                 </div>
               )}
 
-              {/* Step 2: User Preferences / Organization Details */}
               {step === 2 && (
                 <div className="space-y-6 animate-fade-in">
                   {activeTab === 'user' && (
@@ -507,7 +495,6 @@ const RegisterPage = () => {
                 </div>
               )}
 
-              {/* Step 3: Success */}
               {step === 3 && (
                 <div className="text-center space-y-6 animate-fade-in">
                   <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -548,7 +535,6 @@ const RegisterPage = () => {
                 </div>
               )}
 
-              {/* Navigation Buttons */}
               <div className="mt-8 flex justify-between">
                 {step > 1 && step < 3 && (
                   <Button
@@ -585,7 +571,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Sign In Link */}
               <div className="mt-6 text-center text-sm">
                 <p className="text-gray-600">
                   Already have an account?{' '}
