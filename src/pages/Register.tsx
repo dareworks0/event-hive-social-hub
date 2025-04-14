@@ -151,7 +151,7 @@ const RegisterPage = () => {
     
     try {
       setIsSubmitting(true);
-      await signUp(
+      const result = await signUp(
         formData.email,
         formData.password,
         formData.firstName,
@@ -159,7 +159,9 @@ const RegisterPage = () => {
         activeTab
       );
       
-      setShowOtpVerification(true);
+      if (result && result.needsOtp) {
+        setShowOtpVerification(true);
+      }
     } catch (error) {
       console.error('Registration error:', error);
     } finally {

@@ -58,13 +58,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       
-      // Step 1: Initiate sign-in process with OTP
+      // Step 1: Sign in with OTP
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: false, // Only existing users can sign in
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
-            password // We'll verify this in the edge function
+            password // We need to store this temporarily for validation
           }
         }
       });
@@ -79,6 +79,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       // If no error, OTP has been sent
+      toast({
+        title: "Verification code sent",
+        description: "Please check your email for the verification code.",
+      });
       return { needsOtp: true };
       
     } catch (error: any) {
@@ -92,6 +96,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const verifyOtp = async (email: string, otp: string) => {
     try {
       setLoading(true);
+      
+      // Verify the OTP code
       const { error } = await supabase.auth.verifyOtp({
         email,
         token: otp,
@@ -146,7 +152,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string, firstName: string, lastName: string, role: string) => {
     try {
       setLoading(true);
-      const { error, data } = await supabase.auth.signUp({
+      
+      // Step 1: Sign up with OTP (no password verification initially)
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -169,9 +177,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       toast({
-        title: "Check your email",
-        description: "We've sent you a confirmation link to complete your sign up.",
+        title: "Verification code sent",
+        description: "We've sent you a verification code to complete your sign up.",
       });
+      
+      return { needsOtp: true };
     } catch (error: any) {
       console.error('Error signing up:', error.message);
       throw error;
